@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Plus } from "lucide-react";
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 
 export default function DashboardLayout({
   children,
@@ -34,19 +35,7 @@ export default function DashboardLayout({
         </div>
       </header>
 
-      {/* Body */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <aside className="w-60 border-r border-border shrink-0 p-4">
-          <h2 className="text-foreground font-semibold">Sidebar</h2>
-        </aside>
-
-        {/* Main */}
-        <main className="flex-1 overflow-auto p-6">
-          <h2 className="text-foreground font-semibold">Main</h2>
-          {children}
-        </main>
-      </div>
+      <DashboardShell>{children}</DashboardShell>
     </div>
   );
 }
