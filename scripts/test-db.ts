@@ -18,10 +18,11 @@ async function main() {
       try {
         return await fn();
       } catch (err: unknown) {
-        const isTimeout = err instanceof Error && err.message.includes("ETIMEDOUT");
+        const code = (err as { code?: string })?.code;
+        const isTimeout = code === "ETIMEDOUT" || (err instanceof Error && err.message.includes("ETIMEDOUT"));
         if (isTimeout && i < retries) {
           console.log(`  ⏳ Cold start detected, retrying (${i}/${retries - 1})...`);
-          await new Promise((r) => setTimeout(r, 3000));
+          await new Promise((r) => setTimeout(r, 5000));
           continue;
         }
         throw err;
@@ -31,18 +32,49 @@ async function main() {
   }
 
   try {
-    console.log("🔌 Connecting to database...");
+    console.log("🔌 Connecting to database...\n");
 
-    // Count rows in each table (sequential to avoid exhausting Neon's serverless pool)
-    const userCount = await withRetry(() => prisma.user.count());
-    console.log("✅ Connected successfully!\n");
+    // ── Users ──────────────────────────────────────────────────────────────────
+    const users = await withRetry(() =>
+      prisma.user.findMany({ select: { email: true, name: true, isPro: true, emailVerified: true } })
+    );
+    console.log(`👤 Users (${users.length}):`);
+    for (const u of users) {
+      console.log(`   ${u.email} — ${u.name} | pro=${u.isPro} | verified=${!!u.emailVerified}`);
+    }
 
-    console.log("📊 Table counts:");
-    console.log(`  Users:       ${userCount}`);
-    console.log(`  Item Types:  ${await prisma.itemType.count()}`);
-    console.log(`  Collections: ${await prisma.collection.count()}`);
-    console.log(`  Items:       ${await prisma.item.count()}`);
-    console.log(`  Tags:        ${await prisma.tag.count()}`);
+    // ── Item Types ─────────────────────────────────────────────────────────────
+    const types = await prisma.itemType.findMany({ orderBy: { name: "asc" } });
+    console.log(`\n🏷  Item Types (${types.length}):`);
+    for (const t of types) {
+      console.log(`   ${t.name.padEnd(10)} icon=${t.icon}  color=${t.color}  system=${t.isSystem}`);
+    }
+
+    // ── Collections ────────────────────────────────────────────────────────────
+    const collections = await prisma.collection.findMany({
+      include: { _count: { select: { items: true } } },
+      orderBy: { name: "asc" },
+    });
+    console.log(`\n📁 Collections (${collections.length}):`);
+    for (const c of collections) {
+      console.log(`   ${c.name.padEnd(22)} items=${c._count.items}  fav=${c.isFavorite}`);
+    }
+
+    // ── Items ──────────────────────────────────────────────────────────────────
+    const items = await prisma.item.findMany({
+      include: { type: true, tags: { include: { tag: true } } },
+      orderBy: { createdAt: "asc" },
+    });
+    console.log(`\n📄 Items (${items.length}):`);
+    for (const item of items) {
+      const tagNames = item.tags.map((t) => t.tag.name).join(", ");
+      console.log(`   [${item.type.name.padEnd(8)}] ${item.title}`);
+      if (tagNames) console.log(`              tags: ${tagNames}`);
+    }
+
+    // ── Tags ───────────────────────────────────────────────────────────────────
+    const tags = await prisma.tag.findMany({ orderBy: { name: "asc" } });
+    console.log(`\n🔖 Tags (${tags.length}): ${tags.map((t) => t.name).join(", ")}`);
 
     console.log("\n✅ Database test passed.");
   } catch (error) {
