@@ -25,3 +25,4 @@ Not Started
 - Dashboard UI Phase 2 - Collapsible sidebar with type icons/colors, favorite & all collections, user avatar, mobile drawer
 - Dashboard UI Phase 3 - Stats cards, recent collections grid, pinned items and recent items with colored left borders
 - Database setup - Prisma 7 + Neon PostgreSQL, full schema with NextAuth models, migrations, Prisma singleton, db helper scripts
+- Seed data - demo user, 7 system item types, 5 collections, 18 items with tags via prisma/seed.ts
