@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Star, MoreHorizontal, Code2, Sparkles, Terminal, FileText, File, Image, Link as LinkIcon, type LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { mockCollections } from "@/src/lib/mock-data";
+import { getRecentCollections } from "@/src/lib/db/collections";
 
 const iconMap: Record<string, LucideIcon> = {
   snippet: Code2,
@@ -25,13 +25,9 @@ const borderColorMap: Record<string, string> = {
   link:    "border-l-cyan-400",
 };
 
-function getDominantIcon(icons: string[]): string {
-  const counts: Record<string, number> = {};
-  for (const icon of icons) counts[icon] = (counts[icon] ?? 0) + 1;
-  return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? icons[0];
-}
+export async function RecentCollections() {
+  const collections = await getRecentCollections();
 
-export function RecentCollections() {
   return (
     <section>
       <div className="flex items-center justify-between mb-3">
@@ -42,36 +38,37 @@ export function RecentCollections() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-        {mockCollections.map((col) => {
-          const dominant = getDominantIcon(col.icons);
-          const borderColor = borderColorMap[dominant] ?? "border-l-border";
+        {collections.map((col) => {
+          const borderColor = col.dominantTypeKey
+            ? (borderColorMap[col.dominantTypeKey] ?? "border-l-border")
+            : "border-l-border";
           return (
-          <Link key={col.id} href={`/collections/${col.id}`}>
-            <Card className={`bg-card border-border border-l-4 ${borderColor} hover:bg-accent/30 transition-colors cursor-pointer h-full`}>
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between mb-1">
-                  <div className="flex items-center gap-1.5 min-w-0">
-                    <span className="text-sm font-medium text-foreground truncate">{col.name}</span>
-                    {col.isFavorite && (
-                      <Star className="h-3.5 w-3.5 shrink-0 fill-yellow-400 text-yellow-400" />
-                    )}
+            <Link key={col.id} href={`/collections/${col.id}`}>
+              <Card className={`bg-card border-border border-l-4 ${borderColor} hover:bg-accent/30 transition-colors cursor-pointer h-full`}>
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-1">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="text-sm font-medium text-foreground truncate">{col.name}</span>
+                      {col.isFavorite && (
+                        <Star className="h-3.5 w-3.5 shrink-0 fill-yellow-400 text-yellow-400" />
+                      )}
+                    </div>
+                    <MoreHorizontal className="h-4 w-4 text-muted-foreground shrink-0 ml-2" />
                   </div>
-                  <MoreHorizontal className="h-4 w-4 text-muted-foreground shrink-0 ml-2" />
-                </div>
 
-                <p className="text-xs text-muted-foreground mb-3">{col.itemCount} items</p>
-                <p className="text-xs text-muted-foreground line-clamp-1 mb-3">{col.description}</p>
+                  <p className="text-xs text-muted-foreground mb-3">{col.itemCount} items</p>
+                  <p className="text-xs text-muted-foreground line-clamp-1 mb-3">{col.description}</p>
 
-                <div className="flex items-center gap-1.5">
-                  {col.icons.map((iconKey, i) => {
-                    const Icon = iconMap[iconKey];
-                    if (!Icon) return null;
-                    return <Icon key={i} className="h-3.5 w-3.5 text-muted-foreground" />;
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
+                  <div className="flex items-center gap-1.5">
+                    {col.typeKeys.map((key) => {
+                      const Icon = iconMap[key];
+                      if (!Icon) return null;
+                      return <Icon key={key} className="h-3.5 w-3.5 text-muted-foreground" />;
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           );
         })}
       </div>
