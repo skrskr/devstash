@@ -1,23 +1,20 @@
 import { Badge } from "@/components/ui/badge";
 import { Code2, Sparkles, Terminal, FileText, File, Image, Link as LinkIcon, type LucideIcon } from "lucide-react";
-import { mockItems } from "@/src/lib/mock-data";
+import { getPinnedItems, getRecentItems, type ItemWithType } from "@/src/lib/db/items";
 
 const typeConfig: Record<string, { icon: LucideIcon; color: string; bg: string; border: string }> = {
-  type_snippet: { icon: Code2,    color: "text-blue-400",   bg: "bg-blue-400/10",   border: "border-l-blue-400"   },
-  type_prompt:  { icon: Sparkles, color: "text-purple-400", bg: "bg-purple-400/10", border: "border-l-purple-400" },
-  type_command: { icon: Terminal, color: "text-orange-400", bg: "bg-orange-400/10", border: "border-l-orange-400" },
-  type_note:    { icon: FileText, color: "text-green-400",  bg: "bg-green-400/10",  border: "border-l-green-400"  },
-  type_file:    { icon: File,     color: "text-slate-400",  bg: "bg-slate-400/10",  border: "border-l-slate-400"  },
-  type_image:   { icon: Image,    color: "text-pink-400",   bg: "bg-pink-400/10",   border: "border-l-pink-400"   },
-  type_url:     { icon: LinkIcon, color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-l-cyan-400"   },
+  snippet: { icon: Code2,    color: "text-blue-400",   bg: "bg-blue-400/10",   border: "border-l-blue-400"   },
+  prompt:  { icon: Sparkles, color: "text-purple-400", bg: "bg-purple-400/10", border: "border-l-purple-400" },
+  command: { icon: Terminal, color: "text-orange-400", bg: "bg-orange-400/10", border: "border-l-orange-400" },
+  note:    { icon: FileText, color: "text-green-400",  bg: "bg-green-400/10",  border: "border-l-green-400"  },
+  file:    { icon: File,     color: "text-slate-400",  bg: "bg-slate-400/10",  border: "border-l-slate-400"  },
+  image:   { icon: Image,    color: "text-pink-400",   bg: "bg-pink-400/10",   border: "border-l-pink-400"   },
+  url:     { icon: LinkIcon, color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-l-cyan-400"   },
 };
 
-interface ItemRowProps {
-  item: (typeof mockItems)[number];
-}
-
-function ItemRow({ item }: ItemRowProps) {
-  const cfg = typeConfig[item.typeId];
+function ItemRow({ item }: { item: ItemWithType }) {
+  const key = item.typeName.toLowerCase();
+  const cfg = typeConfig[key];
   const Icon = cfg?.icon ?? FileText;
   const color = cfg?.color ?? "text-muted-foreground";
   const bg = cfg?.bg ?? "bg-muted";
@@ -51,8 +48,8 @@ function ItemRow({ item }: ItemRowProps) {
   );
 }
 
-export function PinnedItems() {
-  const pinned = mockItems.filter((i) => i.isPinned);
+export async function PinnedItems() {
+  const pinned = await getPinnedItems();
   if (pinned.length === 0) return null;
 
   return (
@@ -67,10 +64,8 @@ export function PinnedItems() {
   );
 }
 
-export function RecentItems() {
-  const recent = [...mockItems]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 10);
+export async function RecentItems() {
+  const recent = await getRecentItems(10);
 
   return (
     <section>
