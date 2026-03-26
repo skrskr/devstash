@@ -28,3 +28,4 @@ Completed
 - Seed data - demo user, 7 system item types, 5 collections, 18 items with tags via prisma/seed.ts
 - Dashboard collections real data - replaced mock collections with live Prisma queries, border color and type icons derived from actual item types
 - Dashboard items real data - replaced mock pinned/recent items with live Prisma queries, stats cards use real counts, icon/border derived from item type
+- Stats & sidebar real data - sidebar item types and collections from DB, colored dots for non-favorite collections, "View all collections" link, fixed connection pool limit for Neon

@@ -9,7 +9,7 @@ const typeConfig: Record<string, { icon: LucideIcon; color: string; bg: string; 
   note:    { icon: FileText, color: "text-green-400",  bg: "bg-green-400/10",  border: "border-l-green-400"  },
   file:    { icon: File,     color: "text-slate-400",  bg: "bg-slate-400/10",  border: "border-l-slate-400"  },
   image:   { icon: Image,    color: "text-pink-400",   bg: "bg-pink-400/10",   border: "border-l-pink-400"   },
-  url:     { icon: LinkIcon, color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-l-cyan-400"   },
+  link:    { icon: LinkIcon, color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-l-cyan-400"   },
 };
 
 function ItemRow({ item }: { item: ItemWithType }) {

@@ -4,6 +4,8 @@ import { PrismaClient } from "../../generated/prisma/client";
 const createPrismaClient = () => {
   const adapter = new PrismaPg({
     connectionString: process.env.DATABASE_URL!,
+    max: 3,
+    idleTimeoutMillis: 30000,
   });
   return new PrismaClient({ adapter });
 };

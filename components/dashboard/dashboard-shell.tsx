@@ -5,8 +5,15 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Sidebar } from "./sidebar";
+import type { SidebarItemType, SidebarCollection } from "@/src/lib/db/items";
 
-export function DashboardShell({ children }: { children: React.ReactNode }) {
+interface DashboardShellProps {
+  children: React.ReactNode;
+  itemTypes: SidebarItemType[];
+  collections: SidebarCollection[];
+}
+
+export function DashboardShell({ children, itemTypes, collections }: DashboardShellProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -14,14 +21,24 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     <div className="flex flex-1 overflow-hidden">
       {/* Desktop sidebar */}
       <div className="hidden md:flex shrink-0">
-        <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
+        <Sidebar
+          collapsed={collapsed}
+          onToggle={() => setCollapsed((c) => !c)}
+          itemTypes={itemTypes}
+          collections={collections}
+        />
       </div>
 
       {/* Mobile drawer */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="left" className="p-0 w-60">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
-          <Sidebar collapsed={false} onToggle={() => setMobileOpen(false)} />
+          <Sidebar
+            collapsed={false}
+            onToggle={() => setMobileOpen(false)}
+            itemTypes={itemTypes}
+            collections={collections}
+          />
         </SheetContent>
       </Sheet>
 

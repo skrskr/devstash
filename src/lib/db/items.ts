@@ -62,6 +62,61 @@ export async function getRecentItems(limit = 10): Promise<ItemWithType[]> {
   }));
 }
 
+export interface SidebarItemType {
+  id: string;
+  name: string;
+  count: number;
+}
+
+export interface SidebarCollection {
+  id: string;
+  name: string;
+  isFavorite: boolean;
+  dominantTypeKey: string | null;
+}
+
+export async function getSidebarItemTypes(): Promise<SidebarItemType[]> {
+  const types = await prisma.itemType.findMany({
+    where: { isSystem: true },
+    include: { items: { select: { id: true } } },
+    orderBy: { name: "asc" },
+  });
+
+  return types.map((t) => ({
+    id: t.id,
+    name: t.name,
+    count: t.items.length,
+  }));
+}
+
+export async function getSidebarCollections(): Promise<SidebarCollection[]> {
+  const collections = await prisma.collection.findMany({
+    orderBy: [{ isFavorite: "desc" }, { name: "asc" }],
+    include: {
+      items: {
+        include: { type: { select: { name: true } } },
+      },
+    },
+  });
+
+  return collections.map((col) => {
+    const typeCounts: Record<string, number> = {};
+    for (const item of col.items) {
+      const key = item.type.name.toLowerCase();
+      typeCounts[key] = (typeCounts[key] ?? 0) + 1;
+    }
+    const dominantTypeKey =
+      Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+
+    return {
+      id: col.id,
+      name: col.name,
+      isFavorite: col.isFavorite,
+      dominantTypeKey,
+    };
+  });
+}
+
 export async function getDashboardStats(): Promise<DashboardStats> {
   const [items, collections] = await Promise.all([
     prisma.item.findMany({ select: { id: true, isFavorite: true } }),

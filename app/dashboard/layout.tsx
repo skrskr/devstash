@@ -2,12 +2,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Plus } from "lucide-react";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { getSidebarItemTypes, getSidebarCollections } from "@/src/lib/db/items";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const itemTypes = await getSidebarItemTypes();
+  const collections = await getSidebarCollections();
+
   return (
     <div className="flex flex-col h-screen bg-background">
       {/* Top Bar */}
@@ -35,7 +39,9 @@ export default function DashboardLayout({
         </div>
       </header>
 
-      <DashboardShell>{children}</DashboardShell>
+      <DashboardShell itemTypes={itemTypes} collections={collections}>
+        {children}
+      </DashboardShell>
     </div>
   );
 }
