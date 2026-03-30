@@ -2,20 +2,15 @@
 
 ## Status
 
-In Progress
+<!-- Not Started|In Progress|Completed -->
 
 ## Goals
 
-Fix low-risk code quality issues identified by code scanner:
-
-1. Fix circular CSS variable — `--font-sans: var(--font-sans)` → `var(--font-geist-sans)` in `app/globals.css`
-2. Move `export const dynamic` after imports in `app/dashboard/page.tsx`
-3. Add `aria-label="Open navigation"` to mobile menu button in `components/dashboard/dashboard-shell.tsx`
-4. Add `aria-hidden="true"` to decorative `MoreHorizontal` icon in `components/dashboard/recent-collections.tsx`
+<!-- Goals & requirements -->
 
 ## Notes
 
-These are all cosmetic/accessibility fixes with zero functional risk. No DB queries, no auth, no component logic changes.
+<!-- Any extra notes -->
 
 ## History
 
@@ -31,3 +26,4 @@ These are all cosmetic/accessibility fixes with zero functional risk. No DB quer
 - Dashboard items real data - replaced mock pinned/recent items with live Prisma queries, stats cards use real counts, icon/border derived from item type
 - Stats & sidebar real data - sidebar item types and collections from DB, colored dots for non-favorite collections, "View all collections" link, fixed connection pool limit for Neon
 - Pro badge in sidebar - ShadCN outline Badge on File and Image type links, PRO_TYPES Set for easy extension
+- Code quality quick wins - fixed circular CSS font variable, moved route segment config after imports, added aria-label to mobile nav button, added aria-hidden to decorative icon
