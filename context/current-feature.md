@@ -1,12 +1,8 @@
 # Current Feature
 
-<!-- Feature Name -->
-
 ## Status
 
 <!-- Not Started|In Progress|Completed -->
-
-Completed
 
 ## Goals
 
@@ -29,3 +25,4 @@ Completed
 - Dashboard collections real data - replaced mock collections with live Prisma queries, border color and type icons derived from actual item types
 - Dashboard items real data - replaced mock pinned/recent items with live Prisma queries, stats cards use real counts, icon/border derived from item type
 - Stats & sidebar real data - sidebar item types and collections from DB, colored dots for non-favorite collections, "View all collections" link, fixed connection pool limit for Neon
+- Pro badge in sidebar - ShadCN outline Badge on File and Image type links, PRO_TYPES Set for easy extension
