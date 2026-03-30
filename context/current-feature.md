@@ -2,15 +2,20 @@
 
 ## Status
 
-<!-- Not Started|In Progress|Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals & requirements -->
+Fix low-risk code quality issues identified by code scanner:
+
+1. Fix circular CSS variable — `--font-sans: var(--font-sans)` → `var(--font-geist-sans)` in `app/globals.css`
+2. Move `export const dynamic` after imports in `app/dashboard/page.tsx`
+3. Add `aria-label="Open navigation"` to mobile menu button in `components/dashboard/dashboard-shell.tsx`
+4. Add `aria-hidden="true"` to decorative `MoreHorizontal` icon in `components/dashboard/recent-collections.tsx`
 
 ## Notes
 
-<!-- Any extra notes -->
+These are all cosmetic/accessibility fixes with zero functional risk. No DB queries, no auth, no component logic changes.
 
 ## History
 

@@ -51,6 +51,7 @@ export function DashboardShell({ children, itemTypes, collections }: DashboardSh
             size="icon"
             className="h-8 w-8"
             onClick={() => setMobileOpen(true)}
+            aria-label="Open navigation"
           >
             <Menu className="h-4 w-4" />
           </Button>

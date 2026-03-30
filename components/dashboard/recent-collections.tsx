@@ -53,7 +53,7 @@ export async function RecentCollections() {
                         <Star className="h-3.5 w-3.5 shrink-0 fill-yellow-400 text-yellow-400" />
                       )}
                     </div>
-                    <MoreHorizontal className="h-4 w-4 text-muted-foreground shrink-0 ml-2" />
+                    <MoreHorizontal className="h-4 w-4 text-muted-foreground shrink-0 ml-2" aria-hidden="true" />
                   </div>
 
                   <p className="text-xs text-muted-foreground mb-3">{col.itemCount} items</p>
