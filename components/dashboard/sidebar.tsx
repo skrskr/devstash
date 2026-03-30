@@ -18,9 +18,12 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { SidebarItemType, SidebarCollection } from "@/src/lib/db/items";
+
+const PRO_TYPES = new Set(["file", "image"]);
 
 const typeConfig: Record<string, { icon: LucideIcon; color: string; dot: string }> = {
   snippet: { icon: Code2,     color: "text-blue-400",   dot: "bg-blue-400"   },
@@ -101,7 +104,13 @@ export function Sidebar({ collapsed, onToggle, itemTypes, collections }: Sidebar
                   {!collapsed && (
                     <>
                       <span className="flex-1 truncate">{type.name}</span>
-                      <span className="text-xs text-muted-foreground">{type.count}</span>
+                      {PRO_TYPES.has(key) ? (
+                        <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 text-muted-foreground border-muted-foreground/40">
+                          Pro
+                        </Badge>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">{type.count}</span>
+                      )}
                     </>
                   )}
                 </Link>
