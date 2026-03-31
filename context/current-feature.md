@@ -1,20 +1,33 @@
-# Current Feature
+# Current Feature: Auth Setup - NextAuth + GitHub Provider
 
 ## Status
 
-<!-- Not Started|In Progress|Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals & requirements -->
+- Install NextAuth v5 (`next-auth@beta`) and `@auth/prisma-adapter`
+- Set up split auth config pattern for edge compatibility
+- Add GitHub OAuth provider
+- Protect `/dashboard/*` routes using Next.js middleware proxy
+- Redirect unauthenticated users to sign-in
+- Create `src/auth.config.ts` — edge-compatible config (providers only, no adapter)
+- Create `src/auth.ts` — full config with Prisma adapter and JWT strategy
+- Create `src/app/api/auth/[...nextauth]/route.ts` — export handlers from auth.ts
+- Create `proxy.ts` at project root — route protection with redirect logic
+- Create `src/types/next-auth.d.ts` — extend Session type with user.id
 
 ## Notes
 
-<!-- Any extra notes -->
+- Use `next-auth@beta` (not `@latest` which installs v4)
+- Proxy file must be at project root (`proxy.ts`), NOT inside `src/` — Next.js only picks it up from root
+- Use named export: `export const proxy = auth(...)` not default export
+- Use `session: { strategy: 'jwt' }` with split config pattern
+- Don't set custom `pages.signIn` — use NextAuth's default page
+- Use Context7 to verify latest NextAuth v5 conventions before implementing
+- Required env vars: `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`
 
 ## History
-
-<!-- Keep this updated. Earliest to latest -->
 
 - Project setup and boilerplate cleanup
 - Dashboard UI Phase 1 - ShadCN init, dark mode, /dashboard route with top bar, sidebar and main placeholders
