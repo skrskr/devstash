@@ -1,33 +1,20 @@
-# Current Feature: Auth Setup - NextAuth + GitHub Provider
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started|In Progress|Completed -->
 
 ## Goals
 
-- Install NextAuth v5 (`next-auth@beta`) and `@auth/prisma-adapter`
-- Set up split auth config pattern for edge compatibility
-- Add GitHub OAuth provider
-- Protect `/dashboard/*` routes using Next.js middleware proxy
-- Redirect unauthenticated users to sign-in
-- Create `src/auth.config.ts` — edge-compatible config (providers only, no adapter)
-- Create `src/auth.ts` — full config with Prisma adapter and JWT strategy
-- Create `src/app/api/auth/[...nextauth]/route.ts` — export handlers from auth.ts
-- Create `proxy.ts` at project root — route protection with redirect logic
-- Create `src/types/next-auth.d.ts` — extend Session type with user.id
+<!-- Goals & requirements -->
 
 ## Notes
 
-- Use `next-auth@beta` (not `@latest` which installs v4)
-- Proxy file must be at project root (`proxy.ts`), NOT inside `src/` — Next.js only picks it up from root
-- Use named export: `export const proxy = auth(...)` not default export
-- Use `session: { strategy: 'jwt' }` with split config pattern
-- Don't set custom `pages.signIn` — use NextAuth's default page
-- Use Context7 to verify latest NextAuth v5 conventions before implementing
-- Required env vars: `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`
+<!-- Any extra notes -->
 
 ## History
+
+<!-- Keep this updated. Earliest to latest -->
 
 - Project setup and boilerplate cleanup
 - Dashboard UI Phase 1 - ShadCN init, dark mode, /dashboard route with top bar, sidebar and main placeholders
@@ -40,3 +27,4 @@ In Progress
 - Stats & sidebar real data - sidebar item types and collections from DB, colored dots for non-favorite collections, "View all collections" link, fixed connection pool limit for Neon
 - Pro badge in sidebar - ShadCN outline Badge on File and Image type links, PRO_TYPES Set for easy extension
 - Code quality quick wins - fixed circular CSS font variable, moved route segment config after imports, added aria-label to mobile nav button, added aria-hidden to decorative icon
+- Auth Phase 1 - NextAuth v5 + GitHub OAuth, split config pattern (auth.config.ts + auth.ts), Prisma adapter with JWT strategy, proxy.ts at project root protects /dashboard/*, session type extended with user.id
