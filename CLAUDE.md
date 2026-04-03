@@ -18,3 +18,10 @@ Read the following to get the full context of the project:
 - **Lint**: `npm run lint`
 
 **IMPORTANT:** Do not add Claude co-auth to any commit messages
+
+## Neon MCP
+
+- **Project**: `devstash` (ID: `noisy-hall-57721133`)
+- **Default branch**: `development` (ID: `br-delicate-thunder-an53tgvg`)
+- **ALWAYS** use the development branch for all Neon MCP queries and operations
+- **NEVER** use the production branch (`br-broad-paper-anncq5yb`) unless the user explicitly says "production" or "prod"
