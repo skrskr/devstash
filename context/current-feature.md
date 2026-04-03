@@ -2,15 +2,15 @@
 
 ## Status
 
-<!-- Not Started|In Progress|Completed -->
+Not Started
 
 ## Goals
 
-<!-- Goals & requirements -->
+<!-- Add goals here -->
 
 ## Notes
 
-<!-- Any extra notes -->
+<!-- Add notes here -->
 
 ## History
 
@@ -28,3 +28,4 @@
 - Pro badge in sidebar - ShadCN outline Badge on File and Image type links, PRO_TYPES Set for easy extension
 - Code quality quick wins - fixed circular CSS font variable, moved route segment config after imports, added aria-label to mobile nav button, added aria-hidden to decorative icon
 - Auth Phase 1 - NextAuth v5 + GitHub OAuth, split config pattern (auth.config.ts + auth.ts), Prisma adapter with JWT strategy, proxy.ts at project root protects /dashboard/*, session type extended with user.id
+- Auth Phase 2 - Email/password Credentials provider, bcrypt validation in auth.ts, POST /api/auth/register route, custom /sign-in page with GitHub OAuth + credentials form
