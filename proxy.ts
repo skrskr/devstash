@@ -1,9 +1,11 @@
-import { auth } from "@/src/auth";
+import NextAuth from "next-auth";
+import authConfig from "@/src/auth.config";
 
-export const proxy = auth((req) => {
+const { auth } = NextAuth(authConfig);
+
+export default auth((req) => {
   if (!req.auth && req.nextUrl.pathname.startsWith("/dashboard")) {
-    const signInUrl = new URL("/api/auth/signin", req.nextUrl.origin);
-    return Response.redirect(signInUrl);
+    return Response.redirect(new URL("/sign-in", req.nextUrl.origin));
   }
 });
 

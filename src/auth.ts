@@ -1,10 +1,35 @@
 import NextAuth from "next-auth";
+import GitHub from "next-auth/providers/github";
+import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import bcrypt from "bcryptjs";
 import { prisma } from "@/src/lib/prisma";
 import authConfig from "@/src/auth.config";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
+  pages: { signIn: "/sign-in" },
   ...authConfig,
+  providers: [
+    GitHub,
+    Credentials({
+      authorize: async (credentials) => {
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
+        };
+
+        if (!email || !password) return null;
+
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user || !user.password) return null;
+
+        const passwordsMatch = await bcrypt.compare(password, user.password);
+        if (!passwordsMatch) return null;
+
+        return user;
+      },
+    }),
+  ],
 });
