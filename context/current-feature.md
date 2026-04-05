@@ -27,6 +27,7 @@ Not Started
 - Stats & sidebar real data - sidebar item types and collections from DB, colored dots for non-favorite collections, "View all collections" link, fixed connection pool limit for Neon
 - Pro badge in sidebar - ShadCN outline Badge on File and Image type links, PRO_TYPES Set for easy extension
 - Code quality quick wins - fixed circular CSS font variable, moved route segment config after imports, added aria-label to mobile nav button, added aria-hidden to decorative icon
-- Auth Phase 1 - NextAuth v5 + GitHub OAuth, split config pattern (auth.config.ts + auth.ts), Prisma adapter with JWT strategy, proxy.ts at project root protects /dashboard/*, session type extended with user.id
+- Auth Phase 1 - NextAuth v5 + GitHub OAuth, split config pattern (auth.config.ts + auth.ts), Prisma adapter with JWT strategy, src/middleware.ts protects /dashboard/*, session type extended with user.id
 - Auth Phase 2 - Email/password Credentials provider, bcrypt validation in auth.ts, POST /api/auth/register route, custom /sign-in page with GitHub OAuth + credentials form
 - Auth Phase 3 - Custom /sign-in with register link, /register page with validation, UserAvatar component (GitHub image or initials), sidebar bottom with avatar link to /profile and sign-out dropdown
+- Email Verification - Resend sends 24h verification token on register, /check-email page after registration, /verify-email validates token and marks user verified, unverified credentials users blocked from sign-in
