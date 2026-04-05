@@ -41,7 +41,7 @@ export default function RegisterPage() {
     if (data.error) {
       setError(data.error);
     } else {
-      router.push("/sign-in");
+      router.push("/check-email");
     }
   }
 

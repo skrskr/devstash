@@ -29,7 +29,11 @@ export default function SignInPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Invalid email or password");
+      if (result.code === "EmailNotVerified") {
+        setError("Please verify your email before signing in.");
+      } else {
+        setError("Invalid email or password");
+      }
     } else {
       router.push("/dashboard");
     }
