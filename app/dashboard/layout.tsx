@@ -3,14 +3,18 @@ import { Input } from "@/components/ui/input";
 import { Search, Plus } from "lucide-react";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { getSidebarItemTypes, getSidebarCollections } from "@/src/lib/db/items";
+import { auth } from "@/src/auth";
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const itemTypes = await getSidebarItemTypes();
-  const collections = await getSidebarCollections();
+  const [session, itemTypes, collections] = await Promise.all([
+    auth(),
+    getSidebarItemTypes(),
+    getSidebarCollections(),
+  ]);
 
   return (
     <div className="flex flex-col h-screen bg-background">
@@ -39,7 +43,7 @@ export default async function DashboardLayout({
         </div>
       </header>
 
-      <DashboardShell itemTypes={itemTypes} collections={collections}>
+      <DashboardShell itemTypes={itemTypes} collections={collections} user={session?.user}>
         {children}
       </DashboardShell>
     </div>

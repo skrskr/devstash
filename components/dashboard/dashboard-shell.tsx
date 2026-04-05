@@ -6,14 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Sidebar } from "./sidebar";
 import type { SidebarItemType, SidebarCollection } from "@/src/lib/db/items";
+import type { SessionUser } from "@/src/types/auth";
 
 interface DashboardShellProps {
   children: React.ReactNode;
   itemTypes: SidebarItemType[];
   collections: SidebarCollection[];
+  user?: SessionUser;
 }
 
-export function DashboardShell({ children, itemTypes, collections }: DashboardShellProps) {
+export function DashboardShell({ children, itemTypes, collections, user }: DashboardShellProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -26,6 +28,7 @@ export function DashboardShell({ children, itemTypes, collections }: DashboardSh
           onToggle={() => setCollapsed((c) => !c)}
           itemTypes={itemTypes}
           collections={collections}
+          user={user}
         />
       </div>
 
@@ -38,6 +41,7 @@ export function DashboardShell({ children, itemTypes, collections }: DashboardSh
             onToggle={() => setMobileOpen(false)}
             itemTypes={itemTypes}
             collections={collections}
+            user={user}
           />
         </SheetContent>
       </Sheet>

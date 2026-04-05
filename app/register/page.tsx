@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GitBranch } from "lucide-react";
 
-export default function SignInPage() {
+export default function RegisterPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -17,21 +15,33 @@ export default function SignInPage() {
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
-    setLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const result = await signIn("credentials", {
-      email: formData.get("email"),
-      password: formData.get("password"),
-      redirect: false,
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setLoading(true);
+
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password, confirmPassword }),
     });
 
+    const data = await res.json();
     setLoading(false);
 
-    if (result?.error) {
-      setError("Invalid email or password");
+    if (data.error) {
+      setError(data.error);
     } else {
-      router.push("/dashboard");
+      router.push("/sign-in");
     }
   }
 
@@ -40,25 +50,17 @@ export default function SignInPage() {
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">DevStash</CardTitle>
-          <p className="text-sm text-muted-foreground">Sign in to your account</p>
+          <p className="text-sm text-muted-foreground">Create your account</p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
-          >
-            <GitBranch className="h-4 w-4 mr-2" />
-            Continue with GitHub
-          </Button>
-
-          <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-border" />
-            <span className="text-xs text-muted-foreground">or</span>
-            <div className="flex-1 h-px bg-border" />
-          </div>
-
           <form onSubmit={handleSubmit} className="space-y-3">
+            <Input
+              name="name"
+              type="text"
+              placeholder="Full name"
+              required
+              autoComplete="name"
+            />
             <Input
               name="email"
               type="email"
@@ -71,20 +73,27 @@ export default function SignInPage() {
               type="password"
               placeholder="Password"
               required
-              autoComplete="current-password"
+              autoComplete="new-password"
+            />
+            <Input
+              name="confirmPassword"
+              type="password"
+              placeholder="Confirm password"
+              required
+              autoComplete="new-password"
             />
             {error && (
               <p className="text-sm text-destructive">{error}</p>
             )}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? "Creating account..." : "Create account"}
             </Button>
           </form>
 
           <p className="text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-foreground underline underline-offset-4">
-              Register
+            Already have an account?{" "}
+            <Link href="/sign-in" className="text-foreground underline underline-offset-4">
+              Sign in
             </Link>
           </p>
         </CardContent>

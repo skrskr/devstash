@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { signOut } from "next-auth/react";
 import {
   Code2,
   Sparkles,
@@ -13,15 +14,18 @@ import {
   Star,
   ChevronDown,
   ChevronRight,
+  ChevronUp,
   PanelLeftClose,
   PanelLeftOpen,
+  LogOut,
   type LucideIcon,
 } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/user-avatar";
 import { cn } from "@/lib/utils";
 import type { SidebarItemType, SidebarCollection } from "@/src/lib/db/items";
+import type { SessionUser } from "@/src/types/auth";
 
 const PRO_TYPES = new Set(["file", "image"]);
 
@@ -40,11 +44,26 @@ interface SidebarProps {
   onToggle: () => void;
   itemTypes: SidebarItemType[];
   collections: SidebarCollection[];
+  user?: SessionUser;
 }
 
-export function Sidebar({ collapsed, onToggle, itemTypes, collections }: SidebarProps) {
+export function Sidebar({ collapsed, onToggle, itemTypes, collections, user }: SidebarProps) {
   const [typesOpen, setTypesOpen] = useState(true);
   const [collectionsOpen, setCollectionsOpen] = useState(true);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    }
+    if (userMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [userMenuOpen]);
 
   const favoriteCollections = collections.filter((c) => c.isFavorite);
   const allCollections = collections.filter((c) => !c.isFavorite);
@@ -188,17 +207,46 @@ export function Sidebar({ collapsed, onToggle, itemTypes, collections }: Sidebar
         )}
       </div>
 
-      {/* User avatar */}
-      <div className="shrink-0 border-t border-border p-3">
+      {/* User area */}
+      <div className="shrink-0 border-t border-border p-3 relative" ref={userMenuRef}>
+        {userMenuOpen && (
+          <div className="absolute bottom-full left-0 right-0 mb-1 mx-1 bg-popover border border-border rounded-lg shadow-md py-1 z-50">
+            <button
+              className="flex items-center gap-2 px-3 py-1.5 text-sm text-destructive hover:bg-accent w-full transition-colors"
+              onClick={() => signOut({ callbackUrl: "/sign-in" })}
+            >
+              <LogOut className="h-4 w-4" />
+              Sign out
+            </button>
+          </div>
+        )}
         <div className="flex items-center gap-2">
-          <Avatar className="h-7 w-7 shrink-0">
-            <AvatarFallback className="text-xs bg-muted">D</AvatarFallback>
-          </Avatar>
+          <Link href="/profile" className="shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <UserAvatar
+              name={user?.name}
+              image={user?.image}
+              className="h-7 w-7"
+            />
+          </Link>
           {!collapsed && (
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">Demo User</p>
-              <p className="text-xs text-muted-foreground truncate">demo@devstash.io</p>
-            </div>
+            <button
+              className="flex items-center gap-1 min-w-0 flex-1 rounded-md hover:bg-accent transition-colors px-1 py-0.5 text-left"
+              onClick={() => setUserMenuOpen((o) => !o)}
+            >
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-foreground truncate">
+                  {user?.name ?? "User"}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {user?.email ?? ""}
+                </p>
+              </div>
+              {userMenuOpen ? (
+                <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              ) : (
+                <ChevronUp className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              )}
+            </button>
           )}
         </div>
       </div>
